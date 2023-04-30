@@ -1,0 +1,1 @@
+このBOTはDiscord Slash CommandによってMinecraftサーバーの起動停止を管理する目的で作成されました. Google Cloud Functionsの認証あり呼び出しによってサーバーの起動停止が管理できる環境を想定しています. 従って, このプログラム自体は送信されたSlash Commandに対応するCloud Functionsを呼び出す以外に一切の副作用を持ちません. 
