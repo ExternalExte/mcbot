@@ -5,6 +5,7 @@ import { CommandInterface } from './commands/CommandInterface.js';
 
 // コマンドが増えたら一括importできるようにする
 import { off, on, status, whitelist } from './commands/commands.js';
+import './invoke.js';
 
 async function main() {
   const client = new Client({
@@ -35,4 +36,3 @@ async function main() {
   await client.login();
   await CommandRegister(client, commands);
 };
-main();
