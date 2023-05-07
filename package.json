@@ -13,9 +13,9 @@
   "types": "index.d.ts",
   "license": "ISC",
   "dependencies": {
-    "@google-cloud/functions": "^2.4.1",
     "discord.js": "^14.8.0",
-    "dotenv": "^16.0.3"
+    "dotenv": "^16.0.3",
+    "google-auth-library": "^8.8.0"
   },
   "devDependencies": {
     "@types/node": "^18.15.5",
