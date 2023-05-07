@@ -1,14 +1,20 @@
-import { ApplicationCommandType, CommandInteractionOptionResolver, InteractionType, SlashCommandBuilder } from 'discord.js';
+import { CommandInteractionOptionResolver, SlashCommandBuilder } from 'discord.js';
 import { CommandInterface } from './CommandInterface.js';
+import { invokeCloudFunction } from '../invoke.js';
 
+if (!process.env.INSTANCE)
+  throw Error('set instance Name');
+const serverName = process.env.INSTANCE;
 export const on: CommandInterface = {
   data: new SlashCommandBuilder()
     .setName('on')
     .setDescription('サーバーを起動します')
     .setDMPermission(false),
   execute: async interaction => {
-    interaction.reply('サーバーを起動できるようになったらいいね！(現在開発中です)');
-    // TODO!
+    interaction.reply({
+      content: 'サーバーを起動しています....この操作には時間がかかる場合があります'
+    })
+    await invokeCloudFunction(serverName, 'on');
   }
 }
 export const off: CommandInterface = {
@@ -17,8 +23,10 @@ export const off: CommandInterface = {
     .setDescription('サーバーを停止します')
     .setDMPermission(false),
   execute: async interaction => {
-    interaction.reply('サーバーを停止できるようになったらいいね！(現在開発中です)');
-    // TODO!
+    interaction.reply({
+      content: 'サーバーを停止しています....'
+    })
+    await invokeCloudFunction(serverName, 'off');
   }
 }
 export const status: CommandInterface = {
