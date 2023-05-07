@@ -11,9 +11,7 @@ export const on: CommandInterface = {
     .setDescription('サーバーを起動します')
     .setDMPermission(false),
   execute: async interaction => {
-    interaction.reply({
-      content: 'サーバーを起動しています....この操作には時間がかかる場合があります'
-    })
+    interaction.reply('サーバーを起動しています....この操作には時間がかかる場合があります');
     await invokeCloudFunction(serverName, 'on');
   }
 }
@@ -23,9 +21,7 @@ export const off: CommandInterface = {
     .setDescription('サーバーを停止します')
     .setDMPermission(false),
   execute: async interaction => {
-    interaction.reply({
-      content: 'サーバーを停止しています....'
-    })
+    interaction.reply('サーバーを停止しています....');
     await invokeCloudFunction(serverName, 'off');
   }
 }
