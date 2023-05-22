@@ -5,6 +5,7 @@ import { CommandInterface } from './commands/CommandInterface.js';
 
 // コマンドが増えたら一括importできるようにする
 import { off, on, status, whitelist } from './commands/commands.js';
+import { help } from './commands/help.js';
 
 async function main() {
   const client = new Client({
@@ -14,6 +15,8 @@ async function main() {
     ]
   });
   const commands: CommandInterface[] = [on, off, status, whitelist];
+  help.generateHelpText(commands);
+  commands.push(help);
   client.on(Events.ClientReady, async () => console.log('Discord Client ready!'));
   client.on(Events.InteractionCreate, async interaction => {
     if (!interaction.inCachedGuild || !interaction.isChatInputCommand()) return;
