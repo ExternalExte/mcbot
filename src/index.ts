@@ -20,6 +20,10 @@ async function main() {
     console.log(`interaction: ${interaction.commandName}`);
     const command = commands.find(c => c.data.name == interaction.commandName);
     if (!command) return;
+    if (command.permission != undefined && !command.permission.filter(interaction)) {
+      interaction.reply('そのコマンドを実行する権限がありません！');
+      return;
+    }
     return command.execute(interaction).catch(err => {
       console.error(err);
       const content: InteractionReplyOptions = { content: 'コマンドの実行中にエラーが起こったみたい', ephemeral: true };
