@@ -23,6 +23,6 @@ export const help: CommandInterface & HelpText = {
 `
     }
   },
-  helpText: ''
+  helpText: 'マインクラフトのサーバーの死活管理とか出来るかしこいbotです. \n'
 
 }
