@@ -1,10 +1,24 @@
-import { CommandInteractionOptionResolver, SlashCommandBuilder } from 'discord.js';
-import { CommandInterface } from './CommandInterface.js';
+import { CommandInteractionOptionResolver, GuildMemberRoleManager, SlashCommandBuilder } from 'discord.js';
+import { CommandInterface, Permission } from './CommandInterface.js';
 import { invokeCloudFunction } from '../invoke.js';
 
 if (!process.env.INSTANCE)
   throw Error('set instance Name');
 const serverName = process.env.INSTANCE;
+const roleChecker: (name: string) => Permission = name =>
+({
+  description: `\`${name}\`ロールを付与された人のみ`,
+  filter: interaction => {
+    const mcRole = interaction.guild?.roles.cache.find(r => r.name == name);
+    if (!mcRole) return true;
+    const roles = interaction.member?.roles
+    if (roles instanceof GuildMemberRoleManager) {
+      return roles.cache.has(mcRole.id);
+    } else if (Array.isArray(roles)) {
+      return roles.includes(mcRole.id);
+    } else return false;
+  }
+});
 export const on: CommandInterface = {
   data: new SlashCommandBuilder()
     .setName('on')
@@ -13,7 +27,8 @@ export const on: CommandInterface = {
   execute: async interaction => {
     interaction.reply('サーバーを起動しています....この操作には時間がかかる場合があります');
     await invokeCloudFunction(serverName, 'on');
-  }
+  },
+  permission: roleChecker('minecraft')
 }
 export const off: CommandInterface = {
   data: new SlashCommandBuilder()
@@ -23,7 +38,8 @@ export const off: CommandInterface = {
   execute: async interaction => {
     interaction.reply('サーバーを停止しています....');
     await invokeCloudFunction(serverName, 'off');
-  }
+  },
+  permission: roleChecker('minecraft')
 }
 export const status: CommandInterface = {
   data: new SlashCommandBuilder()
@@ -83,5 +99,6 @@ export const whitelist: CommandInterface = {
       }
     }
     interaction.reply(`全然開発中やね`);
-  }
+  },
+  permission: roleChecker('operator')
 }
