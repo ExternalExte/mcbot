@@ -1,7 +1,7 @@
 import { GoogleAuth, IdTokenClient } from 'google-auth-library';
 import { Rcon } from 'rcon-client/lib/rcon.js';
 export class MinecraftServer {
-  isBooting = true;
+  isBooting = false;
   private readonly host: string;
   private readonly pass: string;
   private rconClient: Rcon | undefined = undefined;
