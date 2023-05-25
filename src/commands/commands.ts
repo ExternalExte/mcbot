@@ -1,10 +1,8 @@
 import { CommandInteractionOptionResolver, GuildMemberRoleManager, SlashCommandBuilder } from 'discord.js';
 import { CommandInterface, Permission } from './CommandInterface.js';
-import { invokeCloudFunction } from '../invoke.js';
+import { MinecraftServer } from '../MinecraftServer.js';
 
-if (!process.env.INSTANCE)
-  throw Error('set instance Name');
-const serverName = process.env.INSTANCE;
+const minecraftServer = new MinecraftServer();
 const roleChecker: (name: string) => Permission = name =>
 ({
   description: `\`${name}\`ロールを付与された人のみ`,
@@ -25,8 +23,7 @@ export const on: CommandInterface = {
     .setDescription('サーバーを起動します')
     .setDMPermission(false),
   execute: async interaction => {
-    interaction.reply('サーバーを起動しています....この操作には時間がかかる場合があります');
-    await invokeCloudFunction(serverName, 'on');
+    interaction.reply(await minecraftServer.start())
   },
   permission: roleChecker('minecraft')
 }
@@ -36,8 +33,7 @@ export const off: CommandInterface = {
     .setDescription('サーバーを停止します')
     .setDMPermission(false),
   execute: async interaction => {
-    interaction.reply('サーバーを停止しています....');
-    await invokeCloudFunction(serverName, 'off');
+    interaction.reply(await minecraftServer.stop())
   },
   permission: roleChecker('minecraft')
 }
@@ -47,8 +43,7 @@ export const status: CommandInterface = {
     .setDescription('サーバーの現在の状態を確認できます')
     .setDMPermission(false),
   execute: async interaction => {
-    interaction.reply('なんか色々出力できるようになったらいいな(現在開発中です)');
-    // TODO!
+    interaction.reply(await minecraftServer.send('list'));
   }
 }
 
@@ -85,20 +80,20 @@ export const whitelist: CommandInterface = {
     switch (interaction.options.getSubcommand(true)) {
       case 'add': {
         const user = interaction.options.getString('user', true);
-        console.log(`${user} is added`);
+        interaction.reply(await minecraftServer.send(`whitelist add ${user}`));
         break;
       }
       case 'remove': {
         const user = interaction.options.getString('user', true);
-        console.log(`${user} is removed`);
+        interaction.reply(await minecraftServer.send(`whitelist remove ${user}`));
         break;
       }
       case 'list': {
-        console.log('cat whitelist');
+        interaction.reply(await minecraftServer.send(`whitelist list`));
         break;
       }
     }
-    interaction.reply(`全然開発中やね`);
+    interaction.followUp(await minecraftServer.send(`whitelist reload`));
   },
   permission: roleChecker('operator')
 }
