@@ -13,17 +13,20 @@ export class MinecraftServer {
     this.pass = process.env.MINECRAFT_PASS;
   }
   async send(command: string) {
-    if (this.isBooting && this.rconClient) return this.rconClient.send(command);
-    return 'サーバーは停止しています';
-  }
-  async start() {
-    if (!this.isBooting) {
-      await this.gcfInvoker.switch('on');
+    if (!this.isBooting)
+      return 'サーバーは停止しています';
+    if (!this.rconClient) {
       this.rconClient = await Rcon.connect({
         host: this.host,
         port: 25575,
         password: this.pass
       });
+    }
+    return this.rconClient.send(command);
+  }
+  async start() {
+    if (!this.isBooting) {
+      await this.gcfInvoker.switch('on');
       this.isBooting = true;
       return 'サーバーを起動しました';
     }
