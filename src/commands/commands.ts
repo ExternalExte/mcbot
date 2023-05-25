@@ -77,19 +77,20 @@ export const whitelist: CommandInterface = {
   execute: async interaction => {
     if (!(interaction.options instanceof CommandInteractionOptionResolver))
       throw Error('サブコマンドの取得が上手くいかなかったようです');
+    await interaction.deferReply();
     switch (interaction.options.getSubcommand(true)) {
       case 'add': {
         const user = interaction.options.getString('user', true);
-        interaction.reply(await minecraftServer.send(`whitelist add ${user}`));
+        await interaction.followUp(await minecraftServer.send(`whitelist add ${user}`));
         break;
       }
       case 'remove': {
         const user = interaction.options.getString('user', true);
-        interaction.reply(await minecraftServer.send(`whitelist remove ${user}`));
+        await interaction.followUp(await minecraftServer.send(`whitelist remove ${user}`));
         break;
       }
       case 'list': {
-        interaction.reply(await minecraftServer.send(`whitelist list`));
+        interaction.followUp(await minecraftServer.send(`whitelist list`));
         break;
       }
     }
