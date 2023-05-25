@@ -23,7 +23,8 @@ export const on: CommandInterface = {
     .setDescription('サーバーを起動します')
     .setDMPermission(false),
   execute: async interaction => {
-    interaction.reply(await minecraftServer.start())
+    await interaction.deferReply();
+    interaction.followUp(await minecraftServer.start())
   },
   permission: roleChecker('minecraft')
 }
@@ -33,7 +34,8 @@ export const off: CommandInterface = {
     .setDescription('サーバーを停止します')
     .setDMPermission(false),
   execute: async interaction => {
-    interaction.reply(await minecraftServer.stop())
+    await interaction.deferReply();
+    interaction.followUp(await minecraftServer.stop())
   },
   permission: roleChecker('minecraft')
 }
@@ -43,7 +45,8 @@ export const status: CommandInterface = {
     .setDescription('サーバーの現在の状態を確認できます')
     .setDMPermission(false),
   execute: async interaction => {
-    interaction.reply(await minecraftServer.send('list'));
+    await interaction.deferReply();
+    interaction.followUp(await minecraftServer.send('list'));
   }
 }
 
