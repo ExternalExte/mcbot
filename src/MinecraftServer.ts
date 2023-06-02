@@ -1,17 +1,10 @@
 import { GoogleAuth, IdTokenClient } from 'google-auth-library';
 import { Rcon } from 'rcon-client/lib/rcon.js';
+import { MinecraftEnv, GoogleEnv } from './config.js'
 export class MinecraftServer {
   isBooting = true;
-  private readonly host: string;
-  private readonly pass: string;
   private rconClient: Rcon | undefined = undefined;
   private gcfInvoker = new gcfInvoker();
-  constructor() {
-    if (!process.env.MINECRAFT_HOST) throw Error('サーバーのアドレスをMINECRAFT_HOSTに指定してください');
-    this.host = process.env.MINECRAFT_HOST;
-    if (!process.env.MINECRAFT_PASS) throw Error('サーバーのパスワードをMINECRAFT_PASSに指定してください');
-    this.pass = process.env.MINECRAFT_PASS;
-  }
   async send(command: string) {
     if (this.isBooting && this.rconClient) return this.rconClient.send(command);
     return 'サーバーは停止しています';
@@ -20,9 +13,9 @@ export class MinecraftServer {
     if (!this.isBooting) {
       await this.gcfInvoker.switch('on');
       this.rconClient = await Rcon.connect({
-        host: this.host,
+        host: MinecraftEnv['server url'],
         port: 25575,
-        password: this.pass
+        password: MinecraftEnv['rcon password']
       });
       this.isBooting = true;
       return 'サーバーを起動しました';
@@ -41,23 +34,17 @@ export class MinecraftServer {
   }
 }
 class gcfInvoker {
-  private readonly function_url: string;
-  private readonly instance: string;
   private gcfClient: Promise<IdTokenClient>;
   constructor() {
-    if (!process.env.FUNCTION_URL) throw Error('Cloud FunctionのURLを"FUNCTION_URL"に指定してください');
-    this.function_url = process.env.FUNCTION_URL;
-    if (!process.env.INSTANCE) throw Error('インスタンス名をINSTANCEに指定してください');
-    this.instance = process.env.INSTANCE;
-    this.gcfClient = new GoogleAuth().getIdTokenClient(this.function_url);
+    this.gcfClient = new GoogleAuth().getIdTokenClient(GoogleEnv['function url']);
   }
   async switch(boot: 'on' | 'off') {
     const client = await this.gcfClient;
     const res = await client.request({
       method: 'POST',
-      url: this.function_url,
+      url: GoogleEnv['function url'],
       data: {
-        target: this.instance,
+        target: GoogleEnv['instance name'],
         switch: boot
       }
     });
