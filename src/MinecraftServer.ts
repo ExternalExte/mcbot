@@ -2,13 +2,7 @@ import { GoogleAuth, IdTokenClient } from 'google-auth-library';
 import { Rcon } from 'rcon-client/lib/rcon.js';
 import { MinecraftEnv, GoogleEnv } from './config.js'
 export class MinecraftServer {
-<<<<<<< HEAD
-  isBooting = false;
-  private readonly host: string;
-  private readonly pass: string;
-=======
   isBooting = true;
->>>>>>> dev
   private rconClient: Rcon | undefined = undefined;
   private gcfInvoker = new gcfInvoker();
   async send(command: string) {
